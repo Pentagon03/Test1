@@ -1,0 +1,52 @@
+#include<stdio.h>
+#include<queue>
+#define max(a,b) (a)>(b)?(a):(b)
+using namespace std;
+
+typedef struct point{
+	int r,c;
+}P;
+
+queue<P> q;
+int row,col,cnt,dr[4]={1,0,-1,0},dc[4]={0,1,0,-1},ans;
+int**serv;
+
+bool safe(int a,int b){
+	return a>=0&&a<row&&b>=0&&b<col;
+}
+
+void input(){
+	scanf("%d%d",&row,&col);
+	serv=new int*[row];
+	for(int i=0;i<row;i++)
+		serv[i]=new int[col];
+	for(int i=0;i<row;i++)
+		for(int j=0;j<col;j++){
+			scanf("%d",&serv[i][j]);
+			if(serv[i][j]==0)
+				cnt++;
+			else
+				q.push((P){i,j});
+			}	
+}
+
+void solve(){
+	while(!q.empty()&&cnt>0){
+		int a=q.front().r,b=q.front().c;
+		q.pop();
+		for(int i=0;i<4;i++){
+			int x=a+dr[i],y=b+dc[i];
+			if(safe(x,y)&&serv[x][y]==0){
+				serv[x][y]=serv[a][b]+1; // which represents the level(=time+1)
+				q.push((P){x,y});
+				cnt--;
+				ans=max(ans,serv[x][y]-1);
+			}
+		}
+	}
+	printf("%d",ans);
+}
+int main(){
+	input();
+	solve();
+}
